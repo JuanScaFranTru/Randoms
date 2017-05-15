@@ -1,12 +1,4 @@
-from numpy import mean
-from numpy import var
 from random import random
-
-
-def print_stats(xs):
-    """Print mean and variance of xs in stdout."""
-    template = "Mean: {:2.2f} \t Variance: {:2.2f}"
-    print(template.format(mean(xs), var(xs)))
 
 
 def inverse_transform(ps, xs):
