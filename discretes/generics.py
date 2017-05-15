@@ -37,18 +37,18 @@ def sort_by_probability(ps, xs):
     return ps, xs
 
 
-def accept_and_reject(Y_random, c, ps, q):
-    """Get a random number using the accept and reject method.
+def rejection(Y_random, c, ps, qs):
+    """Get a random number using the acceptance-rejection method.
 
     Y_random -- a random number generator with the same distribution as Y.
-    c -- a constant c such that ps(j)/q(j) <= c for all j in the domain of ps.
+    c -- a constant c such that ps(j)/qs(j) <= c for all j in the domain of ps.
     ps -- distribution ps.
-    q -- distribution q.
+    qs -- distribution qs.
     """
     while True:
         Y = Y_random()
         U = random()
-        if U < ps(Y) / (c * q(Y)):
+        if U < ps(Y) / (c * qs(Y)):
             break
     return Y
 
@@ -71,14 +71,14 @@ def composition(ps, F):
 
 class Alias(object):
     class Bivalued(object):
-        def __init__(self, j, i, ps):
+        def __init__(self, j, i, p):
             self.j = j
             self.i = i
-            self.ps = ps
-            self.q = 1 - ps
+            self.p = p
+            self.q = 1 - p
 
         def random(self, V):
-            if V < self.ps:
+            if V < self.p:
                 return self.j
             else:
                 return self.i
@@ -89,7 +89,8 @@ class Alias(object):
         This method is used when generating random variables with a finite
         number of values, say {1, ..., n}.
         """
-        self.n = n = len(list(ps))
+        ps = list(ps)
+        self.n = n = len(ps)
         self.Xs = [None] * n
         self.xs = xs
 
