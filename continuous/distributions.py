@@ -1,5 +1,6 @@
-from math import log, sqrt, cos, sin, pi
+from math import log, sqrt, cos, sin, pi, exp
 from random import random
+from discretes.distributions import poisson
 
 
 def uniform(a, b):
@@ -20,9 +21,6 @@ def nroot2(n):
     """Generate a random number with CDF F(x) = x ** n.
 
     This function uses the acceptance-rejection method.
-    The PDF is: f(x) = n * x ** (n - 1)
-    The g function is: g(x) = 1
-    The h function is: h(x) = n * x ** (n - 1) and c is equal to n.
     """
     Y = random()
     U = random()
@@ -95,10 +93,70 @@ def twonormal(mu, sigma):
 def twonormal2(mu, sigma):
     """Return two normal distributed random variables."""
     while True:
-        V1, V2 = uniform(-1, 1), uniform(-1, 1)
-        S = V1 ** 2 + V2 ** 2
+        U1, U2 = uniform(-1, 1), uniform(-1, 1)
+        S = U1 ** 2 + U2 ** 2
         if S <= 1:
             break
 
     tmp = sqrt(-2 * log(S) / S)
-    return V1 * tmp, V2 * tmp
+    return U1 * tmp, U2 * tmp
+
+
+def poisson_N(lambda_):
+    """Return the number of events N(1) of a poisson process."""
+    n = 0
+    prod = random()
+    while prod < exp(-lambda_):
+        n += 1
+        prod *= random()
+    return n - 1
+
+
+def poisson_process(T, lambda_):
+    """Generate an homogeneous poisson process.
+
+    T -- Generate until an event occurs after time T.
+    lambda_ -- Param of the distribution.
+    """
+    t = 0.0
+    S = []
+    while True:
+        E = exponential(lambda_)
+        if t + E > T:
+            break
+        t += E
+        S.append(t)
+    return S
+
+
+def poisson_process2(T, lambda_):
+    """Generate an homogeneous poisson process.
+
+    T -- Generate until an event occurs after time T.
+    lambda_ -- Param of the distribution.
+    """
+    n = poisson(lambda_ * T)
+    Us = [uniform(0, T) for _ in range(n)]
+
+    S = [T * U for U in sorted(Us)]
+
+    return S
+
+
+def non_homogeneous_poisson_process(T, lambda_t, lambda_):
+    """Generate a non homogeneous poisson process.
+
+    T -- Generate until an event occurs after time T.
+    lambda_t --  λ(t).
+    lambda_ -- a upper bound for λ(t).
+    """
+    t = 0
+    S = []
+    while True:
+        E = exponential(lambda_)
+        if t + E > T:
+            break
+        t += E
+        if random() < (lambda_t(t) / lambda_):
+            S.append(t)
+    return S
