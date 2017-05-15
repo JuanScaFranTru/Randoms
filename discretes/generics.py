@@ -123,7 +123,6 @@ def monte_carlo_sum(g, N, niter=100):
     """
     if niter >= N:
         return sum((g(i) for i in range(1, N+1)))
-
     S = 0
     for i in range(niter):
         j = int(N * random()) + 1
