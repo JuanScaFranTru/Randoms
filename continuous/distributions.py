@@ -41,7 +41,7 @@ def nroot3(n):
 def exponential(lambda_):
     """Exponential distribution."""
     U = random()
-    return (-log(1 - U)) / lambda_
+    return (-log(U)) / lambda_
 
 
 def gamma(n, lambda_):
@@ -83,7 +83,7 @@ def normal(mu, sigma):
 
 def twonormal(mu, sigma):
     """Return two normal distributed random variables."""
-    rcuad = exponential(1/2)
+    rcuad = exponential(1 / 2)
     theta = uniform(0, 2 * pi)
 
     tmp = sqrt(rcuad)
