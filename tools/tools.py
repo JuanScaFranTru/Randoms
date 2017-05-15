@@ -24,7 +24,7 @@ def plot_histogram(xs, nbins, title=None):
     plt.show()
 
 
-def plot(X_random, nsamples=1000, title=None):
+def plot(X_random, nsamples=10000, title=None):
     """Plot a histogram of the distribution X_random.
 
     X_random -- random number generator.
@@ -33,8 +33,11 @@ def plot(X_random, nsamples=1000, title=None):
     xs = [X_random() for _ in range(nsamples)]
     n = len(xs)
     h = 2 * iqr(xs) / (n ** (1/3))  # Freedman–Diaconis rule
-    nbins = (max(xs) - min(xs)) / h
-    nbins = int(nbins)
+    if h == 0:
+        nbins = 1000
+    else:
+        nbins = (max(xs) - min(xs)) / h
+        nbins = int(nbins)
 
     if len(set(xs)) < 20:
         nbins = len(set(xs))
