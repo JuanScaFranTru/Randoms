@@ -30,14 +30,6 @@ def nroot2(n):
     return Y
 
 
-def nroot3(n):
-    """Generate a random number with CDF F(x) = x ** n.
-
-    This function uses the inverse transform method.
-    """
-    return random() ** (1 / n)
-
-
 def exponential(lambda_):
     """Exponential distribution."""
     U = random()
