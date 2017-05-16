@@ -42,8 +42,11 @@ def plot(X_random, nsamples=1000, f=None, title=None):
     xs = [X_random() for _ in range(nsamples)]
     n = len(xs)
     h = 2 * iqr(xs) / (n ** (1/3))  # Freedman–Diaconis rule
-    nbins = (max(xs) - min(xs)) / h
-    nbins = int(nbins)
+    if h == 0:
+        nbins = 1000
+    else:
+        nbins = (max(xs) - min(xs)) / h
+        nbins = int(nbins)
 
     xs_set = set(xs)
     if len(xs_set) < 20:

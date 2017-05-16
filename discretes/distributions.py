@@ -40,17 +40,17 @@ def bernoulli_batch(p, N):
     return result
 
 
+def poisson_accum(lam, j):
+    prob = exp(-lam)
+    F = prob
+    for i in range(1, j + 1):
+        prob *= (lam / i)
+        F += prob
+    return prob, F
+
+
 def poisson(lam):
     """Poisson distribution."""
-
-    def poisson_accum(lam, j):
-        prob = exp(-lam)
-        F = prob
-        for i in range(1, j + 1):
-            prob *= (lam / i)
-            F += prob
-        return prob, F
-
     value = int(lam)
     prob, F = poisson_accum(lam, value)
     u = random()
@@ -65,7 +65,7 @@ def poisson(lam):
             F -= prob
             prob *= value / lam
             value -= 1
-        return value
+        return max(value, 0)
 
 
 def binomial(n, p):
