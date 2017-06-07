@@ -6,8 +6,8 @@ import discretes.generics as dg
 
 
 class Exercise(object):
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        name = self.__class__.__name__
         msg = 'Exercise {}'.format(name)
         print()
         print(msg)
@@ -16,7 +16,7 @@ class Exercise(object):
 
 class One(Exercise):
     def __init__(self, n=100, niter=1000):
-        super().__init__('One')
+        super().__init__()
         self.n = n
         self.niter = niter
         self.xs = list(range(1, n + 1))
@@ -33,7 +33,7 @@ class One(Exercise):
 
 class Two(Exercise):
     def __init__(self, N=10000, niter=100):
-        super().__init__('Two')
+        super().__init__()
         self.N = N
         self.niter = niter
 
@@ -59,7 +59,7 @@ class Three(Exercise):
     MAX_VALUE = 6
 
     def __init__(self):
-        super().__init__('Three')
+        super().__init__()
 
     def experiment(self):
         never_occurred = {x: True for x in range(2 * self.MIN_VALUE,
@@ -90,7 +90,7 @@ class FourA(Exercise):
     def __init__(self, lambda_=20, k=18):
         self.lambda_ = lambda_
         self.k = k
-        super().__init__('Four a')
+        super().__init__()
 
     def experiment(self):
         while True:
@@ -106,7 +106,7 @@ class FourA(Exercise):
 
 class FourB(Exercise):
     def __init__(self, lambda_=20, k=18):
-        super().__init__('Four b')
+        super().__init__()
         self.lambda_ = lambda_
         self.k = k
         _, self.c = dd.poisson_accum(lambda_, k)
@@ -130,7 +130,7 @@ class FourB(Exercise):
 
 class Five(Exercise):
     def __init__(self):
-        super().__init__('Five')
+        super().__init__()
 
     def experiment(self):
         def Y_random():

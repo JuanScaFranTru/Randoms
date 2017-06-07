@@ -9,9 +9,9 @@ import discretes.distributions as dd
 
 
 class Exercise(object):
-    def __init__(self, name, niter=100000, f=None):
+    def __init__(self, niter=100000, f=None):
         self.niter = niter
-        self.name = name
+        name = self.__class__.__name__
         self.f = f
         msg = 'Exercise {}'.format(name)
         print()
@@ -44,7 +44,7 @@ class One(Exercise):
             if x >= 3 and x <= 6:
                 return 1 - x / 6
             return 0
-        super().__init__('One', f=f)
+        super().__init__(f=f)
 
     def experiment(self):
         return self.G(random())
@@ -63,7 +63,7 @@ class Two(Exercise):
             a = self.alpha
             b = self.beta
             return a * b * x ** (b - 1) * exp(-a * x ** b)
-        super().__init__('Two', f=f)
+        super().__init__(f=f)
 
     def experiment(self):
         return self.G(random())
@@ -71,7 +71,7 @@ class Two(Exercise):
 
 class Four(Exercise):
     def __init__(self):
-        super().__init__('Four')
+        super().__init__()
 
     def experiment(self):
         Y = cd.exponential(1)
@@ -82,7 +82,7 @@ class SevenA(Exercise):
     def __init__(self):
         def f(x):
             return x * exp(-x)
-        super().__init__('Seven A', f=f)
+        super().__init__(f=f)
 
     def experiment(self):
         return cd.gamma(2, 1)
@@ -100,7 +100,7 @@ class SevenB(Exercise):
 
         def f(x):
             return x * exp(-x)
-        super().__init__('Seven B', f=f)
+        super().__init__(f=f)
 
     def experiment(self):
         return cg.rejection(self.Y_random, self.c, self.f, self.g)
@@ -108,7 +108,7 @@ class SevenB(Exercise):
 
 class Eleven(Exercise):
     def __init__(self, lambda_=5, T=1, min_capacity=20, max_capacity=40):
-        super().__init__('Eleven')
+        super().__init__()
         self.min_capacity = min_capacity
         self.max_capacity = max_capacity
         self.lambda_ = lambda_
@@ -130,7 +130,7 @@ class Eleven(Exercise):
 
 class Twelve(Exercise):
     def __init__(self, T=10):
-        super().__init__('Twelve')
+        super().__init__()
 
         def lambda_t(t):
             return 3 + 4 / (t+1)
