@@ -2,23 +2,38 @@ from math import sqrt
 from scipy import stats as st
 
 
-def estimation(generator, n, desv=float('inf')):
-    """Estimates mean using the recursive form for mean and variance.
-    Also return the variance estimator and number of iterations for the
-    estimation.
+def estimation_proportion(generator, n, dev=float('inf')):
+    """Estimates p using the recursive form for mean and variance.
 
-    :param n: min number of iterations to the estimation
-    :param dist: distribution probability function for the random variable
-                that we
-    :param want to estimate the mean.
-    :param accept_value: acceptable value for variance. [default: None]
+    :param generator: random number generator
+    :param n: number of iterations
+    :param dev: minimum standard deviation
 
-    :return 3-uple with the form (mean, var, data_len)
+    :return: 3-uple of the form (p, var, j)
+    """
+    p = 0
+    j = 0
+    while j < n or sqrt((1 - p) * p / j) > dev:
+        j += 1
+        x = generator()
+        p = p + 1 / j * (x - p)
+
+    return p, (1 - p) * p, j
+
+
+def estimation(generator, n, dev=float('inf')):
+    """Estimate mean using the recursive form for mean and variance.
+
+    :param generator: random number generator
+    :param n: number of iterations
+    :param dev: minimum standard deviation
+
+    :return: 3-uple of the form (mean, var, j)
     """
     mean = 0
     var = 0
     j = 0
-    while j < n or sqrt(var / j) > desv:
+    while j < n or sqrt(var / j) > dev:
         j += 1
         x = generator()
         old_mean = mean
@@ -41,14 +56,13 @@ def desv_from_L(L, conf):
 
 def conf_inter(mean, var, n, conf):
     """Return confidence interval for mean estimation.
-    mean: mean estimation
 
-    :param var: variance (estimation or not) that will be used to compute the
-                interval
-    :param n: data_len (number of samples)
-    :param conf: confidence for acceptance (z_(α/2))
+    :param mean: mean
+    :param var: variance
+    :param n: sample size
+    :param conf: confidence of the interval (from 0 to 1)
 
-    :return confidence for acceptance interval
+    :return: confidence interval in the form of a pair
     """
     alpha = 1 - conf
     z = zeta(alpha / 2)
