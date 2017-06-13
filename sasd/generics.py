@@ -1,5 +1,6 @@
 from math import sqrt
 from scipy import stats as st
+from random import choice
 
 
 def estimation_proportion(generator, n, dev=float('inf')):
@@ -68,3 +69,27 @@ def conf_inter(mean, var, n, conf):
     z = zeta(alpha / 2)
     delta = z * sqrt(var / n)
     return (mean - delta, mean + delta)
+
+
+def bootstrap(data, param, estimator, niter):
+    """Return the ECM of estimator
+
+    :param data: Data
+    :param param: Parameter evaluated in the empirical distribution of the data
+    :param estimator: Parameter estimator
+    :param niter: Number of iterations of the Monte Carlo approximation
+
+    :return: Mean Squared Error (MSE)
+
+    Examples of usage:
+        >>> from numpy import mean, var
+        >>> data = [1, 2, 3, 4]
+        >>> bootstrap(data, mean, mean, 1000)
+        >>> bootstrap(data, var, lambda x: var(x, ddof=1), 1000)
+    """
+    n = len(data)
+    ecm = 0
+    for _ in range(niter):
+        sample = [choice(data) for _ in range(n)]
+        ecm += (estimator(sample) - param(data)) ** 2
+    return ecm / niter
