@@ -1,6 +1,16 @@
 from random import random
 
 
+def kolmogorov_d(sample, F):
+    sample.sort()
+    n = len(sample)
+    accum = [F(s) for s in sample]
+    diff1 = [(j + 1) / n - a for j, a in enumerate(accum)]
+    diff2 = [a - j / n for j, a in enumerate(accum)]
+    d = max(diff1 + diff2)
+    return d
+
+
 def kolmogorov_test(sample, F, niter):
     """Return the kolmogorov-Smirnov statistic, its pvalue and its dis.
 
@@ -10,21 +20,16 @@ def kolmogorov_test(sample, F, niter):
     >>> d, pvalue, dis = kolmorogorov_test(sample, F, 500)
 
     """
-    sample.sort()
     n = len(sample)
-    accum = [F(s) for s in sample]
-    diff1 = [(j + 1) / n - a for j, a in enumerate(accum)]
-    diff2 = [a - j / n for j, a in enumerate(accum)]
-    d = max(diff1 + diff2)
+    d = kolmogorov_d(sample, F)
 
     pvalue = 0
-    dis = [None] * niter
     for i in range(niter):
         uniforms = sorted([random() for _ in range(n)])
         uni_diff1 = [(j + 1) / n - u for j, u in enumerate(uniforms)]
         uni_diff2 = [u - j / n for j, u in enumerate(uniforms)]
-        dis[i] = max(uni_diff1 + uni_diff2)
-        if dis[i] > d:
+        dis = max(uni_diff1 + uni_diff2)
+        if dis > d:
             pvalue += 1
 
-    return d, pvalue / niter, dis
+    return d, pvalue / niter

@@ -1,5 +1,4 @@
 from collections import Counter as Freq
-from collections import defaultdict
 from scipy.stats import chi2
 from random import random
 
@@ -91,5 +90,4 @@ def chi2_test_unk_params(n, p, t, estimate_p, niter):
         ti = chi2_t(generated_sample, p)
         if ti >= t:
             pvalue += 1
-
     return t, pvalue / niter
