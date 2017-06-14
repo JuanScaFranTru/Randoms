@@ -17,7 +17,7 @@ def kolmogorov_test(sample, F, niter):
     Example:
     >>> def F(x): return 1 - exp(- x / 100)
     >>> sample = [66, 72, 81, 94, 112, 116, 124, 140, 145, 155]
-    >>> d, pvalue, dis = kolmorogorov_test(sample, F, 500)
+    >>> d, pvalue = kolmogorov_test(sample, F, 500)
 
     """
     n = len(sample)
