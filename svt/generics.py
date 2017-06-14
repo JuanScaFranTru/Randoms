@@ -10,10 +10,10 @@ def is_rejected(pvalue, alpha):
 
 
 def chi2_test(sample, p):
-    """Return the chi squared statistic and its pvalue
+    """Return the chi squared statistic and its pvalue.
 
-    :param p: hypothesized probability distribution
     :param sample: sample
+    :param p: hypothesized probability distribution
 
     :type p: dict(number, float)
     :type sample: list(number)
@@ -39,7 +39,7 @@ def chi2_test(sample, p):
 
 
 def kolmogorov_test(sample, F, niter):
-    """Return the kolmogorov-Smirnov statistic, its pvalue and its dis
+    """Return the kolmogorov-Smirnov statistic, its pvalue and its dis.
 
     Example:
     >>> def F(x): return 1 - exp(- x / 100)
