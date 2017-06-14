@@ -1,4 +1,6 @@
 from random import random
+from numpy import mean
+from math import exp, log
 
 
 def kolmogorov_d(sample, F):
@@ -37,6 +39,21 @@ def kolmogorov_test(sample, F, niter):
 
 def kolmogorov_test_unk_params(n, d, estimate_F, generator, niter):
     """
+    >>> def estimate(sample, lam=None):
+    >>>     if lam is None:
+    >>>         lam = 1 / mean(sample)
+    >>>     def F(x):
+    >>>         return 1 - exp(-lam * x)
+    >>>     return F
+    >>> def generator(lam): return lambda: (-log(random())) / lam
+    >>> sample = [1.6, 10.3, 3.5, 13.5, 18.4, 7.7, 24.3, 10.7,
+    >>>           8.4, 4.9, 7.9, 12, 16.2, 6.8, 14.7]
+    >>> lam = 1/mean(sample)
+    >>> n = len(sample)
+    >>> F = estimate(sample)
+    >>> d = kolmogorov_d(sample, F)
+    >>> print(kolmogorov_test(sample, F, 1))
+    >>> print(kolmogorov_test_unk_params(n, d, estimate, generator(lam), 1000))
     """
     pvalue = 0
     for i in range(niter):
