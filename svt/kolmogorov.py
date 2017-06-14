@@ -1,6 +1,4 @@
 from random import random
-from numpy import mean
-from math import exp, log
 
 
 def kolmogorov_d(sample, F):

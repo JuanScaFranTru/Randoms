@@ -77,3 +77,15 @@ def chi2_test_unk_params(n, t, estimate_p, generator, niter):
         if ti >= t:
             pvalue += 1
     return t, pvalue / niter
+
+
+def chi2_test_simulate(sample, p, niter):
+    n = len(sample)
+
+    def estimate(sample): return p
+
+    def generator(): return inverse_transform(p)
+
+    t = chi2_t(sample, p)
+    t, pvalue = chi2_test_unk_params(n, t, estimate, generator, niter)
+    return t, pvalue
