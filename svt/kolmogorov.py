@@ -33,3 +33,16 @@ def kolmogorov_test(sample, F, niter):
             pvalue += 1
 
     return d, pvalue / niter
+
+
+def kolmogorov_test_unk_params(n, d, estimate_F, generator, niter):
+    """
+    """
+    pvalue = 0
+    for i in range(niter):
+        generated_sample = [generator() for _ in range(n)]
+        F_sim = estimate_F(generated_sample)
+        di = kolmogorov_d(generated_sample, F_sim)
+        if di >= d:
+            pvalue += 1
+    return d, pvalue / niter
