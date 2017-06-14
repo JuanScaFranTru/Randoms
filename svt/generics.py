@@ -9,11 +9,12 @@ def is_rejected(pvalue, alpha):
     return pvalue <= alpha
 
 
-def chi2_test(sample, p):
+def chi2_test(sample, p, m=0):
     """Return the chi squared statistic and its pvalue.
 
     :param sample: sample
     :param p: hypothesized probability distribution
+    :param m: number of unknown parameters
 
     :type p: dict(number, float)
     :type sample: list(number)
@@ -33,7 +34,7 @@ def chi2_test(sample, p):
     freqs = Freq(sample)
 
     t = sum([(freqs[i] - n * p[i]) ** 2 / (n * p[i]) for i in range(a, b + 1)])
-    pvalue = 1 - chi2.cdf(t, k)
+    pvalue = 1 - chi2.cdf(t, k - 1 - m)
 
     return t, pvalue
 
