@@ -11,7 +11,6 @@ def is_rejected(pvalue, alpha):
 
 def chi2_t(sample, p):
     a, b = min(p), max(p)
-    p = defaultdict(float, p)
     freqs = Freq(sample)
 
     n = sum(freqs.values())
@@ -67,11 +66,24 @@ def inverse_transform(p):
     return xs[i]
 
 
-def chi2_test_unk_params(sample, estimate_p, niter):
-    n = len(sample)
-    p = estimate_p(sample)
-    t = chi2_t(sample, p)
+def chi2_test_unk_params(n, p, t, estimate_p, niter):
+    """
+    >>> def estimate(sample, lam=None):
+    >>>     from math import exp, factorial
+    >>>     n = len(Freq(sample))
+    >>>     if lam is None:
+    >>>         lam = sum(sample) / n
+    >>>     p = {i: exp(-lam) * lam ** i / factorial(i) for i in range(n - 1)}
+    >>>     p[n - 1] = 1 - sum(p.values())
+    >>>     return p
 
+    >>> sample = list(Freq({0: 6, 1: 2, 2: 1, 3: 9, 4: 7, 5: 5}).elements())
+    >>> n = len(sample)
+    >>> p = estimate(sample, 2.9)
+    >>> t = chi2_t(sample, p)
+
+    >>> t, pvalue = chi2_test_unk_params(n, p, t, estimate, 100000)
+    """
     pvalue = 0
     for i in range(niter):
         generated_sample = [inverse_transform(p) for _ in range(n)]
