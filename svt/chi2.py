@@ -69,9 +69,9 @@ def chi2_test_unk_params(n, p, t, estimate_p, niter):
     """
     >>> def estimate(sample, lam=None):
     >>>     from math import exp, factorial
-    >>>     n = len(Freq(sample))
     >>>     if lam is None:
-    >>>         lam = sum(sample) / n
+    >>>         lam = sum(sample) / len(sample)
+    >>>     n = len(Freq(sample))
     >>>     p = {i: exp(-lam) * lam ** i / factorial(i) for i in range(n - 1)}
     >>>     p[n - 1] = 1 - sum(p.values())
     >>>     return p
@@ -86,8 +86,8 @@ def chi2_test_unk_params(n, p, t, estimate_p, niter):
     pvalue = 0
     for i in range(niter):
         generated_sample = [inverse_transform(p) for _ in range(n)]
-        p = estimate_p(generated_sample)
-        ti = chi2_t(generated_sample, p)
+        p_sim = estimate_p(generated_sample)
+        ti = chi2_t(generated_sample, p_sim)
         if ti >= t:
             pvalue += 1
     return t, pvalue / niter
