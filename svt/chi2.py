@@ -27,20 +27,6 @@ def chi2_test(sample, p, m=0):
     :type p: dict(number, float)
     :type sample: list(number) or dictionary of frequencies
     :return: t, pvalue
-
-    Examples:
-    >>> p = {0: 0.1, 1: 0.2, 2: 0.3, 3: 0.4}
-    >>> sample = [0, 1, 1, 2, 2, 2, 3, 3, 3, 3]
-    >>> t, pvalue = chi2_test(p, sample)
-
-    >>> def estimate(sample):
-    >>>    lam = 2.9
-    >>>    n = len(sample)
-    >>>    p = {i: exp(-lam) * lam ** i / factorial(i) for i in range(n - 1)}
-    >>>    p[n - 1] = 1 - sum(p.values())
-    >>>    return p
-    >>> sample = {0: 6, 1: 2, 2: 1, 3: 9, 4: 7, 5: 5}
-    >>> t, pvalue = chi2_test(sample, estimate(sample), 1)
     """
     k = max(p) - min(p) + 1
     t = chi2_t(sample, p)
@@ -80,8 +66,8 @@ def chi2_test_unk_params(n, p, t, estimate_p, niter):
     >>> n = len(sample)
     >>> p = estimate(sample, 2.9)
     >>> t = chi2_t(sample, p)
-
-    >>> t, pvalue = chi2_test_unk_params(n, p, t, estimate, 100000)
+    >>> print(chi2_test(sample, p, 1))
+    >>> print(chi2_test_unk_params(n, p, t, estimate, 100000))
     """
     pvalue = 0
     for i in range(niter):
