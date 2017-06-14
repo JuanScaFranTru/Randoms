@@ -1,6 +1,7 @@
 from collections import Counter as Freq
 from collections import defaultdict
 from scipy.stats import chi2
+from random import random
 
 
 def is_rejected(pvalue, alpha):
@@ -47,3 +48,36 @@ def chi2_test(sample, p, m=0):
     t = chi2_t(sample, p)
     pvalue = 1 - chi2.cdf(t, k - 1 - m)
     return t, pvalue
+
+
+def inverse_transform(p):
+    """Get a random value given a discrete distribution.
+
+    :param p: probability distribution
+    :type p: dict(number, float)
+    """
+    ps = list(p.values())
+    xs = list(p.keys())
+    U = random()
+    i = 0
+    F = ps[0]
+    while U >= F:
+        i += 1
+        F += ps[i]
+    return xs[i]
+
+
+def chi2_test_unk_params(sample, estimate_p, niter):
+    n = len(sample)
+    p = estimate_p(sample)
+    t = chi2_t(sample, p)
+
+    pvalue = 0
+    for i in range(niter):
+        generated_sample = [inverse_transform(p) for _ in range(n)]
+        p = estimate_p(generated_sample)
+        ti = chi2_t(generated_sample, p)
+        if ti >= t:
+            pvalue += 1
+
+    return t, pvalue / niter
