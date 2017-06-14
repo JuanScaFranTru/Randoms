@@ -51,7 +51,7 @@ def inverse_transform(p):
     return xs[i]
 
 
-def chi2_test_unk_params(n, p, t, estimate_p, niter):
+def chi2_test_unk_params(n, t, estimate_p, generator, niter):
     """
     >>> def estimate(sample, lam=None):
     >>>     from math import exp, factorial
@@ -61,17 +61,17 @@ def chi2_test_unk_params(n, p, t, estimate_p, niter):
     >>>     p = {i: exp(-lam) * lam ** i / factorial(i) for i in range(n - 1)}
     >>>     p[n - 1] = 1 - sum(p.values())
     >>>     return p
-
     >>> sample = list(Freq({0: 6, 1: 2, 2: 1, 3: 9, 4: 7, 5: 5}).elements())
     >>> n = len(sample)
     >>> p = estimate(sample, 2.9)
     >>> t = chi2_t(sample, p)
     >>> print(chi2_test(sample, p, 1))
-    >>> print(chi2_test_unk_params(n, p, t, estimate, 100000))
+    >>> def generator(): return inverse_transform(p)
+    >>> print(chi2_test_unk_params(n, t, estimate, generator, 100000))
     """
     pvalue = 0
     for i in range(niter):
-        generated_sample = [inverse_transform(p) for _ in range(n)]
+        generated_sample = [generator() for _ in range(n)]
         p_sim = estimate_p(generated_sample)
         ti = chi2_t(generated_sample, p_sim)
         if ti >= t:
