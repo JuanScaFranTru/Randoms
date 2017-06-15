@@ -12,7 +12,7 @@ def kolmogorov_d(sample, F):
 
 
 def kolmogorov_test(sample, F, niter):
-    """Return the kolmogorov-Smirnov statistic, its pvalue and its dis.
+    """Return the kolmogorov-Smirnov statistic and its pvalue.
 
     Example:
     >>> def F(x): return 1 - exp(- x / 100)
