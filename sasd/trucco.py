@@ -2,11 +2,21 @@ from continuous.distributions import normal
 
 from math import sqrt, exp
 from random import random, uniform
-import scipy.stats as st
+from sasd import generics as g
+from numpy import mean
+from numpy import var as variance
 
 
-def zeta(alpha):
-    return st.norm.ppf(1 - alpha)
+def print_stats(mean, var, j, n, dev, interval=None):
+    print("n: {} >= {}".format(j, n))
+    print("Mean: {:2.3f}".format(mean))
+    print("Var: {:2.3f}".format(var))
+    print("sqrt(var / n): {} < {}".format(sqrt(var / j), dev))
+    if interval is not None:
+        print("confidence interval: [{:2.3f}, {:2.3f}]".format(*interval))
+        a, b = interval
+        print("interval length: {:2.3f}".format(b - a))
+        print("delta: {:2.3f}".format((b - a)/2))
 
 
 class Exercise(object):
@@ -18,128 +28,123 @@ class Exercise(object):
         print(len(msg) * '-')
 
 
-class Simulator(Exercise):
-    def __init__(self, niter, min_std_dev):
-        super().__init__()
-        self.niter = niter
-        self.min_std_dev = min_std_dev
+class One(Exercise):
+    def run(self, n=30, dev=0.1):
 
-    def simulate(self):
-        x = self.generator()
-        y = self.generator()
-        mean = (x + y) / 2
-        var = (x - mean) ** 2 + (y - mean) ** 2
+        def generator(): return normal(0, 1)
 
-        j = 2
-        while j < self.niter or sqrt(var / j) > self.min_std_dev:
-            j += 1
-            x = self.generator()
-            old_mean = mean
-            mean = mean + 1 / j * (x - mean)
-            var = (1 - 1/(j - 1)) * var + j * (mean - old_mean) ** 2
-
-        return mean, var, j
-
-    def run(self):
-        mean, var, n = self.simulate()
-        print("n: {} >= {}".format(n, self.niter))
-        print("Mean: {:2.3f}".format(mean))
-        print("Var: {:2.3f}".format(var))
-        print("sqrt(var / n): {} < {}".format(sqrt(var / n), self.min_std_dev))
-        return mean, var, n
+        mean, var, j = g.estimation(generator, n, dev)
+        print_stats(mean, var, j, n, dev)
 
 
-class SimulatorWithInterval(Simulator):
-    def __init__(self, niter, min_std_dev, confidence):
-        super().__init__(niter, min_std_dev)
-        self.alpha = 1 - confidence
-
-    def run(self):
-        mean, var, n = super().run()
-        delta = zeta(self.alpha / 2) * sqrt(var / n)
-        interval_length = 2 * delta
-
-        print('Interval: ({:2.3f}, {:2.3f})'.format(mean - delta,
-                                                    mean + delta))
-        print('Interval length: {:2.3f}'.format(interval_length))
-        print('Delta: {:2.3f}'.format(delta))
-        return mean, var, n
+class Two(Exercise):
+    def run(self, n=100, dev=0.01):
+        def generator(): return exp(random() ** 2)
+        mean, var, j = g.estimation(generator, n, dev)
+        print_stats(mean, var, j, n, dev)
 
 
-class One(Simulator):
-    def __init__(self, niter=30, min_std_dev=0.1):
-        super().__init__(niter, min_std_dev)
+class Three(Exercise):
+    def run(self, niter=1000, conf=0.95):
+        dev = float('inf')
 
-    def generator(self):
-        return normal(0, 1)
+        def generator():
+            n = 0
+            s = 0
+            while s < 1:
+                n += 1
+                s += random()
+            return n
 
+        mean, var, j = g.estimation(generator, niter)
 
-class Two(Simulator):
-    def __init__(self, niter=100, min_std_dev=0.01):
-        super().__init__(niter, min_std_dev)
-
-    def generator(self):
-        return exp(random() ** 2)
-
-
-class Three(SimulatorWithInterval):
-    def __init__(self, niter=1000, confidence=0.95):
-        super().__init__(niter, float('inf'), confidence)
-
-    def generator(self):
-        n = 0
-        s = 0
-        while s < 1:
-            n += 1
-            s += random()
-        return n
+        interval = g.conf_inter(mean, var, j, conf)
+        print_stats(mean, var, j, niter, dev, interval)
 
 
-class Four(SimulatorWithInterval):
-    def __init__(self, niter=1000, confidence=0.95):
-        super().__init__(niter, float('inf'), confidence)
+class Four(Exercise):
+    def run(self, niter=1000, conf=0.95):
+        dev = float('inf')
 
-    def generator(self):
-        n = 1
-        U = random()
-        while True:
-            n += 1
-            V = random()
-            if U > V:
-                break
-            U = V
-        return n
+        def generator():
+            n = 1
+            U = random()
+            while True:
+                n += 1
+                V = random()
+                if U > V:
+                    break
+                U = V
+            return n
+
+        mean, var, j = g.estimation(generator, niter)
+
+        interval = g.conf_inter(mean, var, j, conf)
+        print_stats(mean, var, j, niter, dev, interval)
 
 
-class Five(SimulatorWithInterval):
-    def __init__(self, niter=100, alpha=0.95, L=0.1):
-        min_std_dev = L / (2 * zeta(alpha / 2))
-        super().__init__(niter, min_std_dev, alpha)
+class Five(Exercise):
+    def run(self, niter=1000, L=0.1, conf=0.95):
+        def generator():
+            X = uniform(-1, 1)
+            Y = uniform(-1, 1)
+            if sqrt(X ** 2 + Y ** 2) <= 1:
+                return 1
+            return 0
 
-    def generator(self):
-        X = uniform(-1, 1)
-        Y = uniform(-1, 1)
-        if sqrt(X ** 2 + Y ** 2) <= 1:
-            return 1
-        return 0
+        dev = g.desv_from_L(L, conf) / 4
+        p, var, j = g.estimation_proportion(generator, niter, dev)
+        p = 4 * p
+        var = var * 16
 
-    def simulate(self):
-        x = self.generator()
-        y = self.generator()
-        p = (x + y) / 2
+        interval = g.conf_inter(p, var, j, conf)
+        print_stats(p, var, j, niter, dev * 4, interval)
 
-        j = 2
-        while j < self.niter or sqrt((1 - p) * p / j) > self.min_std_dev:
-            j += 1
-            x = self.generator()
-            p = p + 1 / j * (x - p)
 
-        return 4 * p, 16 * (1 - p) * p, j
+def discrete_uniform(m, k):
+    """Uniformly distributed discrete random number in [m, k]."""
+    U = random()
+    return int(U * (k - m + 1)) + m
+
+
+def choice(data):
+    return data[discrete_uniform(0, len(data) - 1)]
+
+
+class Six(Exercise):
+    def run(self, niter=1000, a=-5, b=5):
+        data = [56, 101, 78, 67, 93, 87, 64, 72, 80, 69]
+        n = len(data)
+        mu = mean(data)  # Empirical mean
+        p = 0
+        for _ in range(niter):
+            random_sample = [choice(data) for _ in range(n)]
+            if a < mean(random_sample) - mu < b:
+                p += 1
+        p /= niter
+
+        print("p = {:2.3f}".format(p))
+
+
+class Seven(Exercise):
+    def exact_bootstrap(data):
+        empirical_var = variance(data)
+        n = len(data)
+        var = 0
+        for i in data:
+            for j in data:
+                var += (variance([i, j], ddof=1) - empirical_var) ** 2
+        return var / n ** n
+
+    def run(self, niter=10):
+        data = [1, 3]
+        var = Seven.exact_bootstrap(data)
+        print("exact var = {:2.3f}".format(var))
+
+        var = g.bootstrap(data, variance, lambda x: variance(x, ddof=1), niter)
+        print("approx var = {:2.3f}".format(var))
 
 
 if __name__ == '__main__':
-    One().run()
-    Two().run()
-    Three().run()
-    Four().run()
-    Five().run()
+    for cls in [One, Two, Three, Four, Five, Six, Seven]:
+        cls().run()
