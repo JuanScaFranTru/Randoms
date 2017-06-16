@@ -1,4 +1,5 @@
 from random import random
+from random import seed
 from math import log
 
 
@@ -8,44 +9,48 @@ def exponential(lambda_):
     return (-log(U)) / lambda_
 
 
-class Simulation(object):
-    def __init__(self):
-        name = self.__class__.__name__
-        msg = 'Simulation {}'.format(name)
-        print()
-        print(msg)
-        print(len(msg) * '-')
+def simulation(n, spare, Tf, Tg):
+    assert n > 0
+    assert spare >= 0
 
-    def run(self, N, S, Tf, Tr):
-        pass
+    def random_fail(): return exponential(1 / Tf)
 
+    def random_fix(): return exponential(1 / Tg)
 
-class One(Simulation):
-    """Inicializar el programa con un sorteo de los tiempos de fallos de cada
-    una las máquinas en uso, y ejecutarlo para estimar el tiempo medio de falla
-    del sistema y su correspondiente desviación estándar.
+    inf = float('inf')
+    fails = [random_fail() for i in range(n)]
+    fails.sort()
+    t = 0
+    broken = 0
+    t_fixed = inf
 
-    Expresar todos los tiempos usando como unidad el mes. Utilizar:
-    N = 5, S = 2, y suponer que el tiempo medio de fallo de una máquina es
-    Tf = 1 mes y que el tiempo medio medio de reparación de una máquina es
-    Tr = 1/8 mes.
-
-    Se realizan 10000 simulaciones de tiempos de fallo.
-    """
-    def __init__(self, N, S, Tf, Tr, nsim=1):
-        """
-        :param N: Number of in service machines
-        :param S: Number of spare machines
-        :param Tf: Mean time until a machine fails
-        :param Tr: Repairing mean time (one machine)
-        :param nsim: Number of simulations
-        """
-        for _ in range(nsim):
-            mean_t, dev_t = self.run(N, S, Tf, Tr)
-        self.mean_t = mean_t
-        self.dev_t = dev_t
-
+    while True:
+        if fails[0] < t_fixed:
+            t = fails[0]
+            broken += 1
+            if broken >= spare + 1:
+                return t
+            if broken < spare + 1:
+                fails[0] = t + random_fail()
+                fails.sort()
+                spare -= 1
+            if broken == 1:
+                t_fixed = t + random_fix()
+        else:
+            t = t_fixed
+            broken -= 1
+            if broken > 0:
+                t_fixed = t + random_fix()
+            if broken == 0:
+                t_fixed = inf
 
 
 if __name__ == '__main__':
-    pass
+    n = 5
+    spare = 2
+    Tf = 1
+    Tg = 0.125
+
+    while True:
+        t = simulation(n, spare, Tf, Tg)
+        print(t)
