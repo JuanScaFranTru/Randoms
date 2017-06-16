@@ -1,6 +1,39 @@
 from random import random
 from math import log, sqrt
-from numpy import mean, var
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import iqr
+
+
+def print_stats(data):
+    """Print mean and std dev of data and return the pair (mean, std dev)."""
+    template = "Mean: {:2.2f} \t Variance: {:2.2f}"
+    sigma = sqrt(np.var(data, ddof=1))
+    mu = np.mean(data)
+    print(template.format(mu, sigma))
+    return mu, sigma
+
+
+def plot_histogram(data, title=None):
+    """Plot a histogram of the distribution X_random.
+
+    data -- data to plot
+    f -- PDF (optional)
+    title -- title (optional)
+    """
+    n = len(data)
+    h = 2 * iqr(data) / (n ** (1/3))  # Freedman–Diaconis rule
+    if h == 0:
+        nbins = 1000
+    else:
+        nbins = (max(data) - min(data)) / h
+        nbins = int(nbins)
+
+    plt.hist(data, nbins, normed=1)
+    plt.title(title)
+    plt.xlabel('Time to Fail (months)')
+    plt.ylabel('Frequency')
+    plt.show()
 
 
 def exponential(lambda_):
@@ -10,16 +43,6 @@ def exponential(lambda_):
 
 
 def simulation1(n, spare, Tf, Tg):
-    """
-    Inicializar el programa con un sorteo de los tiempos de fallos de cada una
-    las máquinas en uso, y ejecutarlo para estimar el tiempo medio de falla del
-    sistema y su correspondiente desviación estándar.
-
-    Expresar todos los tiempos usando como unidad el mes.
-    Utilizar: N = 5, S = 2, y suponer que el tiempo medio de fallo de una
-    máquina es T F = 1 mes y que el tiempo medio medio de reparación de una
-    máquina es T R = 1/8 mes.
-    """
     assert n > 0
     assert spare >= 0
 
@@ -55,7 +78,6 @@ def simulation1(n, spare, Tf, Tg):
 
 
 def simulation2(n, spare, Tf, Tg, oper):
-    """Ahora hay 2 reparadores."""
     assert n > 0
     assert spare >= 0
 
@@ -68,6 +90,7 @@ def simulation2(n, spare, Tf, Tg, oper):
     fails.sort()
     t = 0
     broken = 0
+    fixing = 0
     # Dos operarios
     t_fixed = [inf] * oper
 
@@ -75,7 +98,6 @@ def simulation2(n, spare, Tf, Tg, oper):
         # Se rompe una antes de que alguno de los dos operarios termine de
         # arreglar
         if fails[0] < t_fixed[oper - 1]:
-            print(broken, t, t_fixed, fails)
             t = fails[0]
             broken += 1
             if broken >= spare + 1:
@@ -83,47 +105,44 @@ def simulation2(n, spare, Tf, Tg, oper):
             if broken < spare + 1:
                 fails[0] = t + random_fail()
                 fails.sort()
+
             i = 0
-            while i < oper and t_fixed[i] == inf and i < broken:
+            while broken > fixing and t_fixed[i] == inf:
                 t_fixed[i] = t + random_fix()
+                fixing += 1
                 i += 1
             t_fixed.sort(reverse=True)
+
         else:
             t = t_fixed[oper - 1]
             broken -= 1
-            if broken > 0:
+            fixing -= 1
+
+            if broken > fixing:
                 t_fixed[oper - 1] = t + random_fix()
-            if broken == 0:
+                fixing += 1
+            if broken == fixing:
                 t_fixed[oper - 1] = inf
             t_fixed.sort(reverse=True)
 
 
 if __name__ == '__main__':
-    N = 5
-    S = 2
+    n = 5
+    spare = 2
     Tf = 1
     Tg = 0.125
-    niter = 2
+    niter = 10000
     oper = 2
-    two_Ts = [0] * niter
-    Ts = [0] * niter
-    for i in range(niter - 1):
-        t = simulation1(N, S, Tf, Tg)
-        Ts[i] = t
 
-        t2 = simulation2(N, S, Tf, Tg, oper)
-        two_Ts[i] = t2
+    data = [None] * niter
+    for i in range(niter):
+        data[i] = simulation1(n, spare, Tf, Tg)
 
-    mean1 = mean(Ts)
-    dev1 = sqrt(var(Ts))
+    mu, sigma = print_stats(data)
+    plot_histogram(data)
 
-    mean2 = mean(two_Ts)
-    dev2 = sqrt(var(two_Ts))
+    for i in range(niter):
+        data[i] = simulation2(n, spare, Tf, Tg, oper)
 
-    print("1 operario ")
-    print("Mean =", mean1)
-    print("Dev =", dev1)
-
-    print("\n2 operarios")
-    print("Mean =", mean2)
-    print("Dev =", dev2)
+    mu, sigma = print_stats(data)
+    plot_histogram(data)
