@@ -15,15 +15,27 @@
 
 # Introducción
 
-El problema consiste en realizar una simulación de un servicio de lavadero de
-ropa automático. Se desea determinar el tiempo medio, y la desviación
-estándar, que transcurre hasta que el lavadero deja de ser operativo. Ésto
-ocurre cuando se tiene menos de N máquinas funcionando en un momento dado o,
-equivalentemente, cuando posee más de S máquinas defectuosas en el taller de
-reparación.
 
+## Situación
+Se tiene un lavadero con una cierta cantidad de máquinas que deben estar
+funcionando en todo momento para que el lavadero sea operativo (fallos del
+sistema). Dado que las máquinas se descomponen cada una cierta cantidad de tiempo,
+resulta relevante poder predecir el tiempo que tarda el sistema en
+fallar y determinar si es mejor aumentar la cantidad de máquinas de repuesto o
+aumentar la cantidad de operarios que las reparen.
+
+
+Claramente, determinar analíticamente el tiempo medio que tarda el sistema en
+fallar es muy dificil.
+Por esto es que se realizaron simulaciones para determinar el tiempo medio, y la
+desviación estándar, que transcurre hasta que el lavadero deja de ser operativo.
+
+Por otra parte, estas simulaciones permiten determinar si es más conveniente
+aumentar la cantidad de máquinas de repuesto o la cantidad de operarios, se
+realizaron simulaciones.
 <br>
 <br>
+
 
 ## Modelo
 
@@ -41,10 +53,10 @@ El tiempo de reparación de una máquina que ingresa al taller es una variable
 exponencial con tiempo medio igual a **T_f**, independiente de todos los
 anteriores.
 
-<br>
-<br>
+Se dice que el sistema falla cuando se tiene menos de N máquinas funcionando en un
+momento dado o, equivalentemente, cuando posee más de S máquinas defectuosas en el
+taller de reparación.
 
-## Approach
 
 Para resolver el problema en cuestión, se desarrolló un algoritmo que simula la
 relación que se establece entre los lavarropas que se rompen, aquellos que se
@@ -78,7 +90,7 @@ Los parámetros del algoritmo son, entonces:
 - **oper**: Cantidad de operadores que reparan las máquinas.
 
 
-Para generar los tiempos de retardo de los eventos, definieron las siguientes
+Para generar los tiempos de retardo de los eventos, se definieron las siguientes
 funciones auxiliares:
 
 - Para generar el tiempo de falla de una máquina, el cuál está descripto por
@@ -117,9 +129,10 @@ Por otro lado, se utilizaron las siguientes variables:
 La cantidad de máquinas a arreglar se calcula como `broken - fixing`
 
 
-
-
 El algoritmo completo es el siguiente:
+
+<div class="page-break"></div>
+
 
 ```python
 def simulation(n, spare, Tf, Tg, oper):
@@ -202,21 +215,92 @@ tiempo que tarda el sistema en fallar. Para ésto, los parámetros más
 significativas son **spare** y **oper** ya que éstos son los que el dueño del
 local modficaría para maximizar sus ganancias.
 
-Es por ésto que los parámetros que se pusieron en comparación son las
-anteriormente nombradas.
+Es por ésto que los parámetros que se pusieron en comparación son los
+anteriormente nombrados.
 
-<img src="images/S2O1.png" alt="S2O1" style="display: block; margin: auto; width: 400px;"/>
+Por otro lado, la estructura de los histogramas es la siguiente:
+- **Eje x**: Representa el tiempo, en meses, en el que falla el sistema.
+- **Eje y**: Representa la frecuencia del tiempo que tarda el sistema en fallar.
+En la esquina superior derecha se puede observar la media y la desviación
+estándar resultante del experimento.
 
 
-<img src="images/S2O2.png" alt="S2O2" style="display: block; margin: auto; width: 400px;"/>
+A continuación, se presentan los histogramas correspondientes a cada
+experimento:
 
-<img src="images/S3O1.png" alt="S3O1" style="display: block; margin: auto; width: 400px;"/>
+<div class="page-break"></div>
 
-<img src="images/S2O1vsS2O2.png" alt="S2O1vsS2O2" style="display: block; margin: auto; width: 400px;"/>
+En este caso, realizamos 10000 simulaciones asumiendo que hay 2 máquinas de
+repuesto (spare = 2) y sólo un operario (oper = 1).
+- **mu**: 1.726
+- **sigma**: 1.566
 
-<img src="images/S3O1vsS2O2.png" alt="S2O1vsS3O1" style="display: block; margin: auto; width: 400px;"/>
+<img src="images/S2O1.png" alt="S2O1" style="display: block; margin: auto; width: 550px;"/>
 
-<img src="images/S3O1vsS2O1vsS2O2.png" alt="S3O1vsS2O1vsS2O2" style="display: block; margin: auto; width: 400px;"/>
+
+<div class="page-break"></div>
+
+En este caso, realizamos 10000 simulaciones asumiendo que hay 2 máquinas de
+repuesto (spare = 2) y dos operarios (oper = 2)
+- **mu**: 2.597
+- **sigma**: 2.494
+
+<img src="images/S2O2.png" alt="S2O2" style="display: block; margin: auto; width: 550px;"/>
+
+
+<div class="page-break"></div>
+
+En este caso, realizamos 10000 simulaciones asumiendo que hay 3 máquinas de
+repuesto (spare = 3) y sólo un operario (oper = 1)
+
+- **mu**: 3.583
+- **sigma**: 3.290
+
+<img src="images/S3O1.png" alt="S3O1" style="display: block; margin: auto; width: 550px;"/>
+
+
+<div class="page-break"></div>
+En este caso, realizamos una comparación de la situación en que el lavadero
+tiene 2 máquinas de repuesto y 1 sólo operario con la situación en que tiene 2
+máquinas de repuesto y 2 operarios.
+<br>
+<br>
+Podemos observar que cuando se agrega un operario el tiempo esperado de falla
+del sistema aumenta considerablemente.
+
+Este resultado es el que esperábamos, pues aumenta la velocidad de
+reparación de máquinas al aumentar la cantidad de individuos capaces de reparar
+al mismo tiempo.
+
+<img src="images/S2O1vsS2O2.png" alt="S2O1vsS2O2" style="display: block; margin: auto; width: 550px;"/>
+
+
+<div class="page-break"></div>
+
+En este caso, realizamos una comparación de la situación en que el lavadero
+tiene 3 máquinas de repuesto y 1 sólo operario con la situación en que tiene 2
+máquinas de repuesto y 2 operarios.
+<br>
+<br>
+Podemos observar que adquirir una máquina más de repuesto es más conveniente
+que contratar un operario extra pues el tiempo medio de falla del sistema aumenta.
+
+
+Se puede ver en el histograma que la probabilidad de que el sistema falle
+dentro de los primeros 2 meses es considerablemente superior en el caso de que
+se contrata a un nuevo operario.
+
+<img src="images/S3O1vsS2O2.png" alt="S2O1vsS3O1" style="display: block; margin: auto; width: 550px;"/>
+
+
+<div class="page-break"></div>
+
+En este caso, realizamos una comparación de las tres situaciones antes mencionadas.
+
+Como es esperado, tanto agregar un operario como una máquina de repuesto aumenta
+el tiempo medio de falla del sistema.
+
+<img src="images/S3O1vsS2O1vsS2O2.png" alt="S3O1vsS2O1vsS2O2" style="display: block; margin: auto; width: 550px;"/>
 
 
 <div class="page-break"></div>
