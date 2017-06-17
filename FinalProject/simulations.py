@@ -134,7 +134,7 @@ def comparison(es):
 
 
 if __name__ == '__main__':
-    nbins = 0.1
+    nbins = 0.5
 
     params = [(2, 1), (2, 2), (3, 1)]  # (spare, oper)
     es = {(s, o): run(spare=s, oper=o) for s, o in params}
