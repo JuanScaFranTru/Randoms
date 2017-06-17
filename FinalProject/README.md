@@ -234,6 +234,7 @@ experimento:
 
 <div class="page-break"></div>
 
+## Dos máquinas de repuesto y sólo un operario
 En este caso, realizamos 10000 simulaciones asumiendo que hay 2 máquinas de
 repuesto (spare = 2) y sólo un operario (oper = 1).
 - **mu**: 1.726
@@ -243,6 +244,7 @@ repuesto (spare = 2) y sólo un operario (oper = 1).
 
 
 <div class="page-break"></div>
+## Dos máquinas de repuesto y dos operarios
 
 En este caso, realizamos 10000 simulaciones asumiendo que hay 2 máquinas de
 repuesto (spare = 2) y dos operarios (oper = 2)
@@ -254,6 +256,8 @@ repuesto (spare = 2) y dos operarios (oper = 2)
 
 <div class="page-break"></div>
 
+## Tres máquinas de repuesto y sólo un operario
+
 En este caso, realizamos 10000 simulaciones asumiendo que hay 3 máquinas de
 repuesto (spare = 3) y sólo un operario (oper = 1)
 
@@ -264,6 +268,9 @@ repuesto (spare = 3) y sólo un operario (oper = 1)
 
 
 <div class="page-break"></div>
+
+## Comparación: Agregar un operario
+
 En este caso, realizamos una comparación de la situación en que el lavadero
 tiene 2 máquinas de repuesto y 1 sólo operario con la situación en que tiene 2
 máquinas de repuesto y 2 operarios.
@@ -280,6 +287,7 @@ al mismo tiempo.
 
 
 <div class="page-break"></div>
+## Comparación: Agregar una máquina
 
 En este caso, realizamos una comparación de la situación en que el lavadero
 tiene 3 máquinas de repuesto y 1 sólo operario con la situación en que tiene 2
@@ -294,11 +302,12 @@ Se puede ver en el histograma que la probabilidad de que el sistema falle
 dentro de los primeros 2 meses es considerablemente superior en el caso de que
 se contrata a un nuevo operario.
 
-<img src="images/S3O1vsS2O2.png" alt="S2O1vsS3O1" style="display: block; margin:
-auto; width: 550px;"/>
+<img src="images/S3O1vsS2O2.png" alt="S2O1vsS3O1" style="display: block; margin:  auto; width: 550px;"/>
 
 
 <div class="page-break"></div>
+
+## Comparación: entre todos
 
 En este caso, realizamos una comparación de las tres situaciones antes
 mencionadas.
@@ -309,13 +318,13 @@ el tiempo medio de falla del sistema.
 Por otra parte, es notorio que la distribución de probabilidades parace aumentar
 su dispersión a medida que se agregan operarios y se agregan máquinas.
 
-<img src="images/S3O1vsS2O1vsS2O2.png" alt="S3O1vsS2O1vsS2O2" style="display:
-block; margin: auto; width: 550px;"/>
+<img src="images/S3O1vsS2O1vsS2O2.png" alt="S3O1vsS2O1vsS2O2" style="display: block; margin: auto; width: 550px;"/>
 
 
 <div class="page-break"></div>
 
-# Conclusiones
+# Conclusión
+
 Se presentó el problema de determinar el tiempo de falla esperado de un lavadero
 en función de la cantidad de operarios y lavarropas de repuesto. Se construyó un
 modelo y a partir del mismo se obtuvieron datos simulados correspondientes al
