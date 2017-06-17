@@ -30,13 +30,15 @@ def plot_histogram(data, h=None, title=None, label=None):
     mu, sigma = np.mean(data), sqrt(np.var(data, ddof=1))
     label = label + "$\mu={:2.3f},\ \sigma={:2.3f}$".format(mu, sigma)
 
-    plt.hist(data, nbins, normed=1, alpha=0.5, edgecolor="w", label=label)
+    data = np.array(data)
+    plt.hist(data, weights=np.zeros_like(data) + 1. / data.size, bins=nbins,
+             alpha=0.5, edgecolor="w", label=label)
     plt.legend(loc='upper right')
-    plt.xlim(0, 10)
-    plt.ylim(0, 0.7)
+    plt.xlim(0, max(data))
+
     plt.title(title)
-    plt.xlabel('Time to Fail (months)')
-    plt.ylabel('Frequency')
+    plt.xlabel('Tiempo de falla (meses)')
+    plt.ylabel('Frecuencia')
 
 
 def exponential(lambda_):
