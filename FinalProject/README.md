@@ -141,18 +141,29 @@ def simulation(n, spare, Tf, Tg, oper):
     # 'oper' operarios
     t_fixed = [inf] * oper
 
-    while True:
-        if fails[0] < t_fixed[oper - 1]:
-            # Se rompe una antes de que alguno de los dos operarios termine de
-            # arreglar
+    while True:  # Mientras funcione la lavandería
+
+        # Como t_fixed siempre está ordenada de mayor a menor, t_fixed guarda en
+        # la última posición el mínimo (evento de ese tipo más reciente) y como
+        # fails está ordenado de menor a mayor guarda el mínimo en la primera
+        # posición. El próximo evento a ocurrir es el mínimo entre fails[0] y
+        # t_fixed[oper - 1]
+
+        if fails[0] < t_fixed[oper - 1]: # Un lavarropas ha fallado
             t = fails[0]
             broken += 1
+
+            # Si no hay lavarropas de repuesto la lavandería deja de funcionar
             if broken >= spare + 1:
                 return t
+
+            # Tomar un lavarropa de repuesto y reemplazar el viejo
             if broken < spare + 1:
                 fails[0] = t + random_fail()
-                fails.sort()
+                fails.sort()  # Siempre se ordenan de menor a mayor tiempo
 
+            # Si hay operarios libres ponerlos a trabajar con los lavarropas
+            # rotos
             i = 0
             while broken > fixing and t_fixed[i] == inf:
                 t_fixed[i] = t + random_fix()
@@ -160,19 +171,22 @@ def simulation(n, spare, Tf, Tg, oper):
                 i += 1
             t_fixed.sort(reverse=True)
 
-        else:
+        else: # Un operario ha terminado de arreglar un lavarropa
             t = t_fixed[oper - 1]
             broken -= 1
             fixing -= 1
 
+            # Si no hay lavarropas por arreglar, el operario queda libre
             if broken == fixing:
                 t_fixed[oper - 1] = inf
+
+            # Si hay lavarropas por arreglar, poner el operario a arreglar el
+            # lavarropas
             if broken > fixing:
                 t_fixed[oper - 1] = t + random_fix()
                 fixing += 1
             t_fixed.sort(reverse=True)
 ```
-
 
 
 <div class="page-break"></div>
