@@ -237,8 +237,8 @@ experimento:
 ## Dos máquinas de repuesto y sólo un operario
 En este caso, realizamos 10000 simulaciones asumiendo que hay 2 máquinas de
 repuesto (spare = 2) y sólo un operario (oper = 1).
-- **mu**: 1.726
-- **sigma**: 1.566
+- **Media**: 1.765
+- **Desviación estándar de la media**: 0.01621
 
 <img src="images/S2O1.png" alt="S2O1" style="display: block; margin: auto; width: 550px;"/>
 
@@ -248,8 +248,8 @@ repuesto (spare = 2) y sólo un operario (oper = 1).
 
 En este caso, realizamos 10000 simulaciones asumiendo que hay 2 máquinas de
 repuesto (spare = 2) y dos operarios (oper = 2)
-- **mu**: 2.597
-- **sigma**: 2.494
+- **Media**: 2.555
+- **sigma**: 0.02402
 
 <img src="images/S2O2.png" alt="S2O2" style="display: block; margin: auto; width: 550px;"/>
 
@@ -261,8 +261,8 @@ repuesto (spare = 2) y dos operarios (oper = 2)
 En este caso, realizamos 10000 simulaciones asumiendo que hay 3 máquinas de
 repuesto (spare = 3) y sólo un operario (oper = 1)
 
-- **mu**: 3.583
-- **sigma**: 3.290
+- **Media**: 3.575
+- **Desviación estándar de la media**: 0.0301
 
 <img src="images/S3O1.png" alt="S3O1" style="display: block; margin: auto; width: 550px;"/>
 
@@ -287,6 +287,7 @@ al mismo tiempo.
 
 
 <div class="page-break"></div>
+
 ## Comparación: Agregar una máquina
 
 En este caso, realizamos una comparación de la situación en que el lavadero
