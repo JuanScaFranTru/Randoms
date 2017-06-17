@@ -18,11 +18,11 @@
 
 ## Situación
 Se tiene un lavadero con una cierta cantidad de máquinas que deben estar
-funcionando en todo momento para que el lavadero sea operativo (fallos del
-sistema). Dado que las máquinas se descomponen cada una cierta cantidad de tiempo,
-resulta relevante poder predecir el tiempo que tarda el sistema en
-fallar y determinar si es mejor aumentar la cantidad de máquinas de repuesto o
-aumentar la cantidad de operarios que las reparen.
+funcionando en todo momento para que el lavadero sea operativo. Dado que las
+máquinas se descomponen cada una cierta cantidad de tiempo, resulta relevante
+poder predecir el tiempo que tarda el sistema en fallar y determinar si es mejor
+aumentar la cantidad de máquinas de repuesto o aumentar la cantidad de operarios
+que las reparen.
 
 
 Claramente, determinar analíticamente el tiempo medio que tarda el sistema en
@@ -47,10 +47,10 @@ las máquinas en simultáneo entre sí pero cada uno de manera secuencial, cuand
 
 Todos los tiempos de funcionamiento de las máquinas hasta descomponerse son
 variables aleatorias independientes exponenciales con un tiempo medio de fallar
-de **T_r**,
+de **T<sub>r</sub>**,
 
 El tiempo de reparación de una máquina que ingresa al taller es una variable
-exponencial con tiempo medio igual a **T_f**, independiente de todos los
+exponencial con tiempo medio igual a **T<sub>f</sub>**, independiente de todos los
 anteriores.
 
 Se dice que el sistema falla cuando se tiene menos de N máquinas funcionando en un
@@ -218,12 +218,16 @@ local modficaría para maximizar sus ganancias.
 Es por ésto que los parámetros que se pusieron en comparación son los
 anteriormente nombrados.
 
+Los tres experimentos realizados utilizaron los siguientes parámetros:
+  - 2 máquinas de repuesto y 1 operarios
+  - 2 máquinas de repuesto y 2 operarios
+  - 3 máquinas de repuesto y 1 sólo operario.
+
 Por otro lado, la estructura de los histogramas es la siguiente:
 - **Eje x**: Representa el tiempo, en meses, en el que falla el sistema.
 - **Eje y**: Representa la frecuencia del tiempo que tarda el sistema en fallar.
 En la esquina superior derecha se puede observar la media y la desviación
 estándar resultante del experimento.
-
 
 A continuación, se presentan los histogramas correspondientes a cada
 experimento:
@@ -290,19 +294,40 @@ Se puede ver en el histograma que la probabilidad de que el sistema falle
 dentro de los primeros 2 meses es considerablemente superior en el caso de que
 se contrata a un nuevo operario.
 
-<img src="images/S3O1vsS2O2.png" alt="S2O1vsS3O1" style="display: block; margin: auto; width: 550px;"/>
+<img src="images/S3O1vsS2O2.png" alt="S2O1vsS3O1" style="display: block; margin:
+auto; width: 550px;"/>
 
 
 <div class="page-break"></div>
 
-En este caso, realizamos una comparación de las tres situaciones antes mencionadas.
+En este caso, realizamos una comparación de las tres situaciones antes
+mencionadas.
 
 Como es esperado, tanto agregar un operario como una máquina de repuesto aumenta
 el tiempo medio de falla del sistema.
 
-<img src="images/S3O1vsS2O1vsS2O2.png" alt="S3O1vsS2O1vsS2O2" style="display: block; margin: auto; width: 550px;"/>
+Por otra parte, es notorio que la distribución de probabilidades parace aumentar
+su dispersión a medida que se agregan operarios y se agregan máquinas.
+
+<img src="images/S3O1vsS2O1vsS2O2.png" alt="S3O1vsS2O1vsS2O2" style="display:
+block; margin: auto; width: 550px;"/>
 
 
 <div class="page-break"></div>
 
 # Conclusiones
+Se presentó el problema de determinar el tiempo de falla esperado de un lavadero
+en función de la cantidad de operarios y lavarropas de repuesto. Se construyó un
+modelo y a partir del mismo se obtuvieron datos simulados correspondientes al
+tiempo de falla del sistema. Dado que resulta de gran interés saber cómo
+maximizar el tiempo que tarda el sistema en fallar en función de estos
+parámetros, los distintos experimentos realizados varían estos parámetros.
+
+Agregar una máquina de repuesto incrementa el tiempo medio de fallo del sistema
+en un 50%. Agregar un operario incrementa el tiempo medio de fallo del sistema
+en un 107%. Claramente, agregar una máquina aumenta más el tiempo medio de fallo
+del sistema que agregar un operario. Estos resultados no deben extrapolarse a
+otras situaciones en las cuáles los parámetros sean distintos (ver Resultados).
+
+Es importante destacar que el algoritmo propuesto puede ser útil para realizar
+otros experimentos modificando los parámetros del mismo.
