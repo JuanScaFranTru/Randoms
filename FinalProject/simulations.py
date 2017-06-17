@@ -7,14 +7,13 @@ from scipy.stats import iqr
 
 def print_stats(data):
     """Print mean and std dev of data and return the pair (mean, std dev)."""
-    template = "Mean: {:2.2f} \t Variance: {:2.2f}"
+    template = "mu: {:2.3f} \t sigma: {:2.3f}"
     sigma = sqrt(np.var(data, ddof=1))
     mu = np.mean(data)
     print(template.format(mu, sigma))
-    return mu, sigma
 
 
-def plot_histogram(data, title=None):
+def plot_histogram(data, number=0):
     """Plot a histogram of the distribution X_random.
 
     data -- data to plot
@@ -29,8 +28,14 @@ def plot_histogram(data, title=None):
         nbins = (max(data) - min(data)) / h
         nbins = int(nbins)
 
-    plt.hist(data, nbins, normed=1)
-    plt.title(title)
+    mu, sigma = np.mean(data), sqrt(np.var(data, ddof=1))
+    label = "$\mu={:2.3f},\ \sigma={:2.3f}$".format(mu, sigma)
+
+    plt.hist(data, nbins, normed=1, edgecolor="b", label=label)
+    plt.legend(loc='upper right')
+    plt.xlim(0, 13)
+    plt.ylim(0, 0.7)
+    plt.title("Histogram of experiment {}".format(number))
     plt.xlabel('Time to Fail (months)')
     plt.ylabel('Frequency')
     plt.show()
@@ -42,42 +47,7 @@ def exponential(lambda_):
     return (-log(U)) / lambda_
 
 
-def simulation1(n, spare, Tf, Tg):
-    assert n > 0
-    assert spare >= 0
-
-    def random_fail(): return exponential(1 / Tf)
-
-    def random_fix(): return exponential(1 / Tg)
-
-    inf = float('inf')
-    fails = [random_fail() for i in range(n)]
-    fails.sort()
-    t = 0
-    broken = 0
-    t_fixed = inf
-
-    while True:
-        if fails[0] < t_fixed:
-            t = fails[0]
-            broken += 1
-            if broken >= spare + 1:
-                return t
-            if broken < spare + 1:
-                fails[0] = t + random_fail()
-                fails.sort()
-            if broken == 1:
-                t_fixed = t + random_fix()
-        else:
-            t = t_fixed
-            broken -= 1
-            if broken > 0:
-                t_fixed = t + random_fix()
-            if broken == 0:
-                t_fixed = inf
-
-
-def simulation2(n, spare, Tf, Tg, oper):
+def simulation(n, spare, Tf, Tg, oper):
     assert n > 0
     assert spare >= 0
 
@@ -126,23 +96,17 @@ def simulation2(n, spare, Tf, Tg, oper):
             t_fixed.sort(reverse=True)
 
 
-if __name__ == '__main__':
-    n = 5
-    spare = 2
-    Tf = 1
-    Tg = 0.125
-    niter = 10000
-    oper = 2
-
+def run(n=5, spare=2, Tf=1, Tg=0.125, oper=1, niter=10000, number=0):
     data = [None] * niter
     for i in range(niter):
-        data[i] = simulation1(n, spare, Tf, Tg)
+        data[i] = simulation(n, spare, Tf, Tg, oper)
+    data = np.array(data)
+    # data = data * 30
+    print_stats(data)
+    plot_histogram(data, number)
 
-    mu, sigma = print_stats(data)
-    plot_histogram(data)
 
-    for i in range(niter):
-        data[i] = simulation2(n, spare, Tf, Tg, oper)
-
-    mu, sigma = print_stats(data)
-    plot_histogram(data)
+if __name__ == '__main__':
+    run(number=1)
+    run(oper=1, number=2)
+    run(spare=3, number=3)
