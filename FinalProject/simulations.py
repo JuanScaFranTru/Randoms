@@ -13,7 +13,7 @@ def print_stats(data):
     print(template.format(mu, sigma))
 
 
-def plot_histogram(data, h=None, number=0):
+def plot_histogram(data, h=None, title=None, label=None):
     """Plot a histogram of the distribution X_random.
 
     data -- data to plot
@@ -28,13 +28,13 @@ def plot_histogram(data, h=None, number=0):
     nbins = int(nbins)
 
     mu, sigma = np.mean(data), sqrt(np.var(data, ddof=1))
-    label = "$\mu={:2.3f},\ \sigma={:2.3f}$".format(mu, sigma)
+    label = label + "$\mu={:2.3f},\ \sigma={:2.3f}$".format(mu, sigma)
 
     plt.hist(data, nbins, normed=1, alpha=0.5, edgecolor="w", label=label)
     plt.legend(loc='upper right')
     plt.xlim(0, 10)
     plt.ylim(0, 0.7)
-    plt.title("Experiment {}".format(number))
+    plt.title(title)
     plt.xlabel('Time to Fail (months)')
     plt.ylabel('Frequency')
 
@@ -102,28 +102,35 @@ def run(n=5, spare=2, Tf=1, Tg=0.125, oper=1, niter=10000):
     return data
 
 
-if __name__ == '__main__':
-    es = [run(), run(oper=2), run(spare=3)]
-
-    nbins = 0.1
-    j = 0
-    for e in es:
-        print_stats(e)
-        plot_histogram(e, nbins, number=j)
-        j += 1
+def plot_all(es):
+    for param, e in es.items():
+        title = 'S={}, O={} '.format(*param)
+        plot_histogram(e, nbins, title, title)
+        plt.savefig('images/' + title.replace('.', ''))
         plt.show()
 
-    for e in es:
-        plot_histogram(e, nbins, j)
-    j += 1
+
+def comparison(es):
+    title = ''
+    for i, v in enumerate(es.items()):
+        if i > 0:
+            title += 'vs. '
+        param, e = v
+        label = 'S={}, O={} '.format(*param)
+        title += label
+        plot_histogram(e, nbins, title, label)
+
+    plt.savefig('images/' + title.replace('.', ''))
     plt.show()
 
-    plot_histogram(es[0], nbins, j)
-    plot_histogram(es[1], nbins, j)
-    j += 1
-    plt.show()
 
-    plot_histogram(es[1], nbins, j)
-    plot_histogram(es[2], nbins, j)
-    j += 1
-    plt.show()
+if __name__ == '__main__':
+    nbins = 0.1
+
+    params = [(2, 1), (2, 2), (3, 1)]  # (spare, oper)
+    es = {(s, o): run(spare=s, oper=o) for s, o in params}
+
+    plot_all(es)
+    comparison(es)
+    comparison({params[i]: es[params[i]] for i in [0, 1]})
+    comparison({params[i]: es[params[i]] for i in [1, 2]})
