@@ -13,32 +13,30 @@ def print_stats(data):
     print(template.format(mu, sigma))
 
 
-def plot_histogram(data, number=0):
+def plot_histogram(data, h=None, number=0):
     """Plot a histogram of the distribution X_random.
 
     data -- data to plot
     f -- PDF (optional)
     title -- title (optional)
     """
-    n = len(data)
-    h = 2 * iqr(data) / (n ** (1/3))  # Freedman–Diaconis rule
-    if h == 0:
-        nbins = 1000
-    else:
-        nbins = (max(data) - min(data)) / h
-        nbins = int(nbins)
+    if h is None:
+        n = len(data)
+        h = 2 * iqr(data) / (n ** (1/3))  # Freedman–Diaconis rule
+
+    nbins = (max(data) - min(data)) / h
+    nbins = int(nbins)
 
     mu, sigma = np.mean(data), sqrt(np.var(data, ddof=1))
     label = "$\mu={:2.3f},\ \sigma={:2.3f}$".format(mu, sigma)
 
-    plt.hist(data, nbins, normed=1, edgecolor="b", label=label)
+    plt.hist(data, nbins, normed=1, alpha=0.5, edgecolor="w", label=label)
     plt.legend(loc='upper right')
-    plt.xlim(0, 13)
+    plt.xlim(0, 10)
     plt.ylim(0, 0.7)
-    plt.title("Histogram of experiment {}".format(number))
+    plt.title("Experiment {}".format(number))
     plt.xlabel('Time to Fail (months)')
     plt.ylabel('Frequency')
-    plt.show()
 
 
 def exponential(lambda_):
@@ -96,17 +94,36 @@ def simulation(n, spare, Tf, Tg, oper):
             t_fixed.sort(reverse=True)
 
 
-def run(n=5, spare=2, Tf=1, Tg=0.125, oper=1, niter=10000, number=0):
+def run(n=5, spare=2, Tf=1, Tg=0.125, oper=1, niter=10000):
     data = [None] * niter
     for i in range(niter):
         data[i] = simulation(n, spare, Tf, Tg, oper)
     data = np.array(data)
-    # data = data * 30
-    print_stats(data)
-    plot_histogram(data, number)
+    return data
 
 
 if __name__ == '__main__':
-    run(number=1)
-    run(oper=1, number=2)
-    run(spare=3, number=3)
+    es = [run(), run(oper=2), run(spare=3)]
+
+    nbins = 0.1
+    j = 0
+    for e in es:
+        print_stats(e)
+        plot_histogram(e, nbins, number=j)
+        j += 1
+        plt.show()
+
+    for e in es:
+        plot_histogram(e, nbins, j)
+    j += 1
+    plt.show()
+
+    plot_histogram(es[0], nbins, j)
+    plot_histogram(es[1], nbins, j)
+    j += 1
+    plt.show()
+
+    plot_histogram(es[1], nbins, j)
+    plot_histogram(es[2], nbins, j)
+    j += 1
+    plt.show()
