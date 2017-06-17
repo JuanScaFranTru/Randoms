@@ -179,6 +179,17 @@ def simulation(n, spare, Tf, Tg, oper):
 
 # Resultados
 
+En todos los casos, se realizaron 10000 simulaciones para calcular la media
+y la desviación estándar. Con los resultados de estas simulaciones es que se
+contruyeron los distintos histogramas que se presentarán a continuación.
+
+Dado el contexto del problema, resulta de gran interés saber cómo maximizar el
+tiempo que tarda el sistema en fallar. Para ésto, los parámetros más
+significativas son **spare** y **oper** ya que éstos son los que el dueño del
+local modficaría para maximizar sus ganancias.
+
+Es por ésto que los parámetros que se pusieron en comparación son las
+anteriormente nombradas.
 
 <img src="images/S2O1.png" alt="S2O1" style="display: block; margin: auto; width: 400px;"/>
 
