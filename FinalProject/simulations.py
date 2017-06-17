@@ -85,12 +85,12 @@ def simulation(n, spare, Tf, Tg, oper):
             t = t_fixed[oper - 1]
             broken -= 1
             fixing -= 1
+            if broken == fixing:
+                t_fixed[oper - 1] = inf
 
             if broken > fixing:
                 t_fixed[oper - 1] = t + random_fix()
                 fixing += 1
-            if broken == fixing:
-                t_fixed[oper - 1] = inf
             t_fixed.sort(reverse=True)
 
 
