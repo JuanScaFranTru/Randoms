@@ -107,9 +107,9 @@ def plot_all(es):
         title = 'S={}, O={} '.format(*param)
         plot_histogram(e, nbins, title, title)
         plt.savefig('images/' + title.replace('.', '')
-                    .replace(' ', '')
-                    .replace(',', '')
-                    .replace('=', ''))
+                                     .replace(' ', '')
+                                     .replace(',', '')
+                                     .replace('=', ''))
         plt.show()
 
 
@@ -124,9 +124,9 @@ def comparison(es):
         plot_histogram(e, nbins, title, label)
 
     plt.savefig('images/' + title.replace('.', '')
-                .replace(' ', '')
-                .replace(',', '')
-                .replace('=', ''))
+                                 .replace(' ', '')
+                                 .replace(',', '')
+                                 .replace('=', ''))
     plt.show()
 
 
