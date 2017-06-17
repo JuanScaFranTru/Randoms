@@ -7,7 +7,7 @@ from scipy.stats import iqr
 
 def print_stats(data):
     """Print mean and std dev of data and return the pair (mean, std dev)."""
-    template = "mu: {:2.3f} \t sigma: {:2.3f}"
+    template = "**mu**: {:2.3f} \t **sigma**: {:2.3f}"
     sigma = sqrt(np.var(data, ddof=1))
     mu = np.mean(data)
     print(template.format(mu, sigma))
@@ -34,7 +34,7 @@ def plot_histogram(data, h=None, title=None, label=None):
     plt.hist(data, weights=np.zeros_like(data) + 1. / data.size, bins=nbins,
              alpha=0.5, edgecolor="w", label=label)
     plt.legend(loc='upper right')
-    plt.xlim(0, max(data))
+    plt.xlim(0, 15)
 
     plt.title(title)
     plt.xlabel('Tiempo de falla (meses)')
@@ -107,6 +107,7 @@ def run(n=5, spare=2, Tf=1, Tg=0.125, oper=1, niter=10000):
 def plot_all(es):
     for param, e in es.items():
         title = 'S={}, O={} '.format(*param)
+        print_stats(e)
         plot_histogram(e, nbins, title, title)
         plt.savefig('images/' + title.replace('.', '')
                                      .replace(' ', '')
