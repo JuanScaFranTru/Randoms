@@ -1,0 +1,116 @@
+\section{Algoritmo y descripción de las variables}
+
+    \par En este trabajo se desarrolló un algoritmo que
+    generaliza la idea de el problema propuesto. El algoritmo retorna el tiempo
+    que pasa hasta que el sistema deja de ser operativo, dada una cantidad
+    arbitraria de técnicos reparadores, máquinas de repuesto y máquinas que deben
+    estar funcionando en todo momento.
+
+    \subsection{Parámetros del Algoritmo}
+
+        \par Los parámetros del algoritmo son:
+        \begin{itemize}
+            \item{$N$: Cantidad de máquinas que deben estar funcionando en todo
+              momento.}
+            \item{$S$: Cantidad de máquinas de repuesto.}
+            \item{$T_f$: Tiempo medio de falla de una máquina.}
+            \item{$T_r$: Tiempo medio de reparación de una máquina por un
+              operador.}
+            \item{$O$: Cantidad de operadores que reparan las máquinas.}
+        \end{itemize}
+
+        \par Tanto el tiempo de falla de una máquina como el tiempo que tarda un
+        operario en arreglar una máquina, tienen distribución exponencial con
+        media $T_f$ y $T_r$ respectivamente.
+
+
+    \subsection{Variables internas del Algoritmo}
+
+        Por otro lado, se utilizaron las siguientes variables:
+        \begin{itemize}
+            \item{$t$: Tiempo actual.}
+            \item{$failure\_times$: Lista de los tiempos de fallos de máquinas.}
+            \item{$fix\_times$: Lista de los tiempos en los que se finalizan los
+              arreglos de las máquinas.}
+            \item{$fixing$: Cantidad de operarios que están arreglando
+              máquinas o equivalentemente, la cantidad de máquinas que están
+              siendo arregladas.}
+            \item{$broken$: Cantidad de máquinas que están rotas (incluye
+              aquellas que están siendo arregladas).}
+        \end{itemize}
+
+    \begin{algorithm} [H]
+    \caption{Simulation($N$, $S$, $O$, $T_f$, $T_r$)}
+    \label{alg}
+    \begin{algorithmic} [1]
+    \STATE $ t \coloneqq  0 $
+    \STATE $ broken \coloneqq  0 $
+    \STATE $ fixing \coloneqq  0 $
+    \STATE $ failure\_times \coloneqq \lbrack  \mathcal{E}(1/T_f)_0, \dots , \mathcal{E}(1/T_f)_{N-1} \rbrack $
+    \STATE $ fix\_times \coloneqq  \lbrack \infty_0, \dots, \infty_{O-1}\rbrack $
+
+    \WHILE{$ broken \leq S $}
+    \IF{$ failure\_times_0 < fix\_times_0 $}
+
+      \STATE $ t \coloneqq failure\_times_0$
+      \STATE $ broken \coloneqq broken + 1 $
+
+      \IF{$ broken \leq S $}
+        \STATE $ failure\_times \coloneqq \lbrack X_1, \dots, X_{N-1}, t +
+         \mathcal{E}(1/T_f)\rbrack $
+        \STATE Sort $ failure\_times $
+      \ENDIF
+
+      \IF{$ broken > fixing $ and $ fix\_times_{N-1} = \infty $}
+        \STATE $ fix\_times \coloneqq \lbrack Y_0, \dots, Y_{O-2}, t + \mathcal{E}(1/T_r)\rbrack $
+        \STATE Sort $ fix\_times $
+      \ENDIF
+
+    \ELSE
+
+      \STATE $ t \coloneqq fix\_times_0 $
+      \STATE $ broken \coloneqq broken - 1 $
+      \STATE $ fixing \coloneqq fixing - 1 $
+
+      \IF{$ broken = fixing $}
+        \STATE $ fix\_times \coloneqq \lbrack Y_1, \dots, Y_{O-1}, \infty \rbrack $
+      \ENDIF
+
+      \IF{$ broken > fixing $}
+        \STATE $ fix\_times \coloneqq \lbrack Y_1, \dots, Y_{O-1}, t + \mathcal{E}(1/T_r)\rbrack $
+        \STATE $ fixing \coloneqq fixing + 1 $
+
+      \ENDIF
+      \STATE Sort $ fix\_times $
+
+    \ENDIF
+    \ENDWHILE
+    \RETURN $ t $
+    \end{algorithmic}
+    \end{algorithm}
+
+    \par El algoritmo mantiene dos listas ($ failure\_times$ y $fix\_times $)
+    con los tiempos de los eventos ordenados de menor a mayor. Dado que están
+    ordenadas, $ min(failure\_times_0, fix\_times_0) $ representa el próximo
+    evento que ocurrirá. Los tiempos de falla se inicializan con valores
+    generados a partir de una variable aleatoria exponencial con media $T_f$.
+    Los tiempos de reparación se inicializan todos en infinito dado que no
+    existen lavarropas en reparación.
+
+    \par La simulación del lavadero se realiza hasta que éste deje de funcionar,
+    es decir hasta que la cantidad de máquinas descompuestas sea mayor a la
+    cantidad de máquinas de repuesto i.e., $ broken > S $.
+
+    \par Si se descompone un lavarropas, se lo reemplaza por uno de repuesto y
+    se calcula para este último el momento en el que fallará. Además, si un
+    operario está libre comenzará a arreglar el lavarropa; por lo que también se
+    calcula el tiempo que tardará.
+
+    \par Si un operario termina de arreglar un lavarropas y hay un lavarropas
+    descompuesto, se pone a trabajar inmediatamente y se calcula el tiempo que
+    tardará en completar su tarea. Si no hay un lavarropas descompuesto, se
+    marca al operario como libre. Para indicar que está libre se actualiza su
+    tiempo a infinito. Esto significa que el próximo evento relacionado con la
+    finalización de una reparación realizada por este operario nunca ocurrirá.
+
+\pagebreak

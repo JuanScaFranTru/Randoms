@@ -13,25 +13,19 @@ def print_stats(data):
     print(template.format(mu, sigma))
 
 
-def plot_histogram(data, h=None, title=None, label=None):
+def plot_histogram(data, h, title=None, label=None):
     """Plot a histogram of the distribution X_random.
 
     data -- data to plot
     f -- PDF (optional)
     title -- title (optional)
     """
-    if h is None:
-        n = len(data)
-        h = 2 * iqr(data) / (n ** (1/3))  # Freedman–Diaconis rule
-
-    nbins = (max(data) - min(data)) / h
-    nbins = int(nbins)
-
+    bins = np.linspace(0, 20, 60)
     mu, sigma = np.mean(data), sqrt(np.var(data, ddof=1))
     label = label + "$\mu={:2.3f},\ \sigma={:2.3f}$".format(mu, sigma)
 
     data = np.array(data)
-    plt.hist(data, weights=np.zeros_like(data) + 1. / data.size, bins=nbins,
+    plt.hist(data, weights=np.zeros_like(data) + 1. / data.size, bins=bins,
              alpha=0.5, edgecolor="w", label=label)
     plt.legend(loc='upper right')
     plt.xlim(0, 15)
@@ -104,29 +98,18 @@ def run(n=5, spare=2, Tf=1, Tg=0.125, oper=1, niter=10000):
     return data
 
 
-def plot_all(es):
-    for param, e in es.items():
-        title = 'S={}, O={} '.format(*param)
-        print_stats(e)
-        plot_histogram(e, nbins, title, title)
-        plt.savefig('images/' + title.replace('.', '')
-                                     .replace(' ', '')
-                                     .replace(',', '')
-                                     .replace('=', ''))
-        plt.show()
-
-
 def comparison(es):
+    h = 0.5
     title = ''
+    plt.figure(num=None, figsize=(8, 6), dpi=150, facecolor='w', edgecolor='k')
     for i, v in enumerate(es.items()):
         if i > 0:
             title += 'vs. '
         param, e = v
         label = 'S={}, O={} '.format(*param)
         title += label
-        plot_histogram(e, nbins, title, label)
-
-    plt.savefig('images/' + title.replace('.', '')
+        plot_histogram(e, h, title, label)
+    plt.savefig('../report/images/' + title.replace('.', '')
                                  .replace(' ', '')
                                  .replace(',', '')
                                  .replace('=', ''))
@@ -134,12 +117,9 @@ def comparison(es):
 
 
 if __name__ == '__main__':
-    nbins = 0.5
-
     params = [(2, 1), (2, 2), (3, 1)]  # (spare, oper)
     es = {(s, o): run(spare=s, oper=o) for s, o in params}
 
-    plot_all(es)
-    comparison(es)
+    comparison({params[i]: es[params[i]] for i in [0, 2]})
     comparison({params[i]: es[params[i]] for i in [0, 1]})
     comparison({params[i]: es[params[i]] for i in [1, 2]})

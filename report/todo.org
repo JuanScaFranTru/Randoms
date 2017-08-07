@@ -1,0 +1,18 @@
+* Algoritmos
+*** DONE Evitar incluir detalles finos como generación de v.a. exponenciales. Estos son irrelevantes para el problema que se está abordando 
+
+*** DONE No incluir código. Usar pseudoalgoritmos y variables simbólicas (no variables en código python) que permitan entender el procedimiento de manera independiente al lenguaje elegido para la simulación
+
+*** DONE La descripción/explicación de las operaciones debe estar en el texto principal de la sección y no en el pseudocódigo
+
+* Resultados
+
+*** DONE Al pié de cada figura debe haber un texto que la identifique. P.ej.: "Figura 1: histograma de ..."
+
+*** DONE Evitar usar un histograma por figura porque dificulta la comparación de alternativas. Es preferible graficarlos de a pares o las tres configuraciones juntas.
+
+*** TODO La desviación estandar en todos los casos da un valor similar a la media. No se pide la desviación del estimador sino la de los datos.
+
+*** TODO Asociado a cada gráfica se debe incluir una discusión de sus características más sobresalientes, a fin de guiar al lector en su interpretación.
+
+*** TODO Corroborar las gráficas que incluyen más de 1 histograma. No puede haber un histograma que cubra a otro completamente (si los pensamos como aproximaciones a la pdf, deberían tener la misma área total)

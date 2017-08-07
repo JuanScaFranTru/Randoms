@@ -1,0 +1,47 @@
+\section{\textbf{Introducción}}
+
+    \par Se tiene un lavadero con una cierta cantidad de máquinas que deben
+    estar funcionando en todo momento para que éste sea operativo. Dado
+    que las máquinas se descomponen cada una cierta cantidad de tiempo,
+    resulta relevante poder predecir el tiempo que tarda el sistema en fallar
+    y determinar si es mejor aumentar la cantidad de máquinas de repuesto o
+    aumentar la cantidad de operarios que las reparan.
+
+    \par Claramente, determinar analíticamente el tiempo medio que tarda el
+    sistema en fallar es muy dificil. Por esto es que se realizaron simulaciones
+    para determinar el tiempo medio que transcurre hasta que el lavadero deja
+    de ser operativo y la desviación estándar.
+
+    \par Por otra parte, estas simulaciones permiten determinar si es más
+    conveniente aumentar la cantidad de máquinas de repuesto o la cantidad de
+    operarios.
+
+
+    \subsection{Modelo}
+
+    \par El lavadero cuenta con $N$ máquinas lavadoras en servicio y $S$
+    máquinas de respuesto, todas ellas de idéntica marca, modelo y antigüedad.
+    Además el lavadero cuenta con los servicios de técnicos que reparan
+    las máquinas cuando éstas se rompen. Los técnicos trabajan en paralelo y
+    cada uno se encarga de arreglar máquinas de a una por vez.
+    Todos los tiempos de funcionamiento de las máquinas hasta descomponerse
+    son variables aleatorias independientes exponenciales con un tiempo medio de
+    fallar de $T_f$.
+    El tiempo de reparación de una máquina que ingresa al taller es una
+    variable exponencial con tiempo medio igual a $T_r$, independiente de todos
+    los anteriores.
+
+    \par Se dice que el sistema falla cuando se tiene menos de $N$ máquinas
+    funcionando en un momento dado o, equivalentemente, cuando posee más de $S$
+    máquinas defectuosas en el taller de reparación.
+
+    \par Para resolver el problema en cuestión, se desarrolló un algoritmo que
+    simula la relación que se establece entre los lavarropas que se rompen,
+    aquellos que se están arreglando y los lavarropas de repuesto hasta que el
+    sistema falla.
+    En esta simulación se considera un \textbf{evento} cuando se rompe una máquina
+    o cuando se termina de arreglar una.
+    Entonces, si se rompe una máquina, y no puede ser atendida por el
+    técnico porque éste está arreglando otra, ésta se considera en la cola de
+    espera para ser atendida. Una vez que un operario termina de arreglar un
+    máquina, o bien comienza a reparar otra o bien se considera libre.

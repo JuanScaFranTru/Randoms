@@ -1,8 +1,6 @@
 # Trabajo Final de Modelos y Simulación
 ## FaMAF - 2017
 
-<img src="images/lavarropa.jpg" alt="lavarropa" style="display: block; margin: auto; width: 200px;"/>
-
 ### Estudiantes:
 
 
@@ -31,8 +29,7 @@ Por esto es que se realizaron simulaciones para determinar el tiempo medio, y la
 desviación estándar, que transcurre hasta que el lavadero deja de ser operativo.
 
 Por otra parte, estas simulaciones permiten determinar si es más conveniente
-aumentar la cantidad de máquinas de repuesto o la cantidad de operarios, se
-realizaron simulaciones.
+aumentar la cantidad de máquinas de repuesto o la cantidad de operarios.
 <br>
 <br>
 
@@ -83,33 +80,20 @@ repuesto, máquinas que deben estar funcionando en todo momento.
 
 Los parámetros del algoritmo son, entonces:
 
-- **n**: Cantidad de máquinas que deben estar funcionando en todo momento.
-- **spare**: Cantidad de máquinas de repuesto.
-- **Tf**: Tiempo medio de falla de una máquina.
-- **Tg**: Tiempo medio de reparación de una máquina por un operador.
-- **oper**: Cantidad de operadores que reparan las máquinas.
+- **N**: Cantidad de máquinas que deben estar funcionando en todo momento.
+- **S**: Cantidad de máquinas de repuesto.
+- **T<sub>f</sub>**: Tiempo medio de falla de una máquina.
+- **T<sub>r</sub>**: Tiempo medio de reparación de una máquina por un operador.
+- **O**: Cantidad de operadores que reparan las máquinas.
 
 
 Para generar los tiempos de retardo de los eventos, se definieron las siguientes
 funciones auxiliares:
 
-- Para generar el tiempo de falla de una máquina, el cuál está descripto por
-una variable aleatoria con distribución exponencial con media **Tf** utilizamos
-la siguiente función auxiliar:
+- Tanto el tiempo de falla de una máquina como el tiempo que tarda
+un operario en arreglar una máquina, tienen distribución exponencial con
+media **Tf** y **Tr** respectivamente.
 
-```python
-def random_fail():
-    return exponential(1 / Tf)  # Genera un número aleatorio X ~ ɛ(λ)
-```
-
-- Para generar el tiempo que tarda un operario en arreglar una máquina, el cuál
-está descripto por una variable aleatoria con distribución exponencial con -
-media **Tr** utilizamos la siguiente función auxiliar:
-
-```python
-def random_fix():
-    return exponential(1 / Tg)  # Genera un número aleatorio X ~ ɛ(λ)
-```
 
 Por otro lado, se utilizaron las siguientes variables:
 
@@ -136,15 +120,6 @@ El algoritmo completo es el siguiente:
 
 ```python
 def simulation(n, spare, Tf, Tg, oper):
-    assert n > 0
-    assert spare >= 0
-
-    def random_fail():
-        return exponential(1 / Tf)
-
-    def random_fix():
-        return exponential(1 / Tg)
-
     inf = float('inf')
     fails = [random_fail() for i in range(n)]
     fails.sort()
@@ -155,12 +130,6 @@ def simulation(n, spare, Tf, Tg, oper):
     t_fixed = [inf] * oper
 
     while True:  # Mientras funcione la lavandería
-
-        # Como t_fixed siempre está ordenada de mayor a menor, t_fixed guarda en
-        # la última posición el mínimo (evento de ese tipo más reciente) y como
-        # fails está ordenado de menor a mayor guarda el mínimo en la primera
-        # posición. El próximo evento a ocurrir es el mínimo entre fails[0] y
-        # t_fixed[oper - 1]
 
         if fails[0] < t_fixed[oper - 1]: # Un lavarropas ha fallado
             t = fails[0]

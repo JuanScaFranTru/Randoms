@@ -1,0 +1,11 @@
+\select@language {spanish}
+\contentsline {section}{\numberline {1}\textbf {Introducci\IeC {\'o}n}}{2}
+\contentsline {subsection}{\numberline {1.1}Modelo}{2}
+\contentsline {section}{\numberline {2}Algoritmo y descripci\IeC {\'o}n de las variables}{3}
+\contentsline {subsection}{\numberline {2.1}Par\IeC {\'a}metros del Algoritmo}{3}
+\contentsline {subsection}{\numberline {2.2}Variables internas del Algoritmo}{3}
+\contentsline {section}{\numberline {3}Resultados}{5}
+\contentsline {subsection}{\numberline {3.1}Comparaci\IeC {\'o}n: Agregar un operario}{6}
+\contentsline {subsection}{\numberline {3.2}Comparaci\IeC {\'o}n: Agregar una m\IeC {\'a}quina}{7}
+\contentsline {subsection}{\numberline {3.3}Comparaci\IeC {\'o}n: Agregar una m\IeC {\'a}quina vs. agregar un operario}{8}
+\contentsline {section}{\numberline {4}Conclusi\IeC {\'o}n}{9}
